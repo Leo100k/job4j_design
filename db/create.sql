@@ -51,3 +51,4 @@ create table attachs (
                          name text,
                          item_id int references items(id)
 );
+COMMIT;
