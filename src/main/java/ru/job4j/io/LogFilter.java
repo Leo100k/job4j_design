@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class LogFilter {
     private final String file;
@@ -16,9 +16,11 @@ public class LogFilter {
     public List<String> filter() {
         List<String> rsl = new ArrayList<>();
         try (BufferedReader input = new BufferedReader(new FileReader(file))) {
+
             rsl = input.lines()
-                    .filter(s -> s.contains("404 "))
-                    .collect(Collectors.toList());
+                    .map(s -> s.split(" "))
+                    .filter(s -> s[s.length - 2].equals("404"))
+                    .map(s2 -> s2.toString()).toList();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -28,6 +30,7 @@ public class LogFilter {
 
     public static void main(String[] args) {
         LogFilter logFilter = new LogFilter("data/log.txt");
-        logFilter.filter().forEach(System.out::println);
+        logFilter.filter().forEach((System.out::println));
     }
+
 }
