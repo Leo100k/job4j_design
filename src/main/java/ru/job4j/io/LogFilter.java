@@ -1,7 +1,6 @@
 package ru.job4j.io;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,25 +14,36 @@ public class LogFilter {
     public List<String> filter() {
         List<String> rsl = new ArrayList<>();
         try (BufferedReader input = new BufferedReader(new FileReader(file))) {
-            List<String> inputList = input.lines()
-                    .toList();
-            for (String s : inputList) {
-                String[] words = s.split(" ");
-                for (String w : words) {
-                    if (words[words.length - 2].equals("404")) {
-                        rsl.add(s);
-                        break;
-                    }
+            for (String line = input.readLine(); line != null; line = input.readLine()) {
+                String[] str = line.split(" ");
+                if (str[str.length - 2].equals("404")) {
+                    rsl.add(line);
                 }
             }
-
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return rsl;
     }
 
+    public void saveTo(String out) {
+        var data = filter();
+        try (PrintWriter output = new PrintWriter(
+                new BufferedOutputStream(
+                        new FileOutputStream(out)
+                ))) {
+            for (String str : data) {
+                output.println(str);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void main(String[] args) {
+        new LogFilter("data/log.txt").saveTo("data/404.txt");
         LogFilter logFilter = new LogFilter("data/log.txt");
         logFilter.filter().forEach((System.out::println));
     }
