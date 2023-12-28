@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class LogFilter {
     private final String file;
 
@@ -16,11 +15,17 @@ public class LogFilter {
     public List<String> filter() {
         List<String> rsl = new ArrayList<>();
         try (BufferedReader input = new BufferedReader(new FileReader(file))) {
-
-            rsl = input.lines()
-                    .map(s -> s.split(" "))
-                    .filter(s -> s[s.length - 2].equals("404"))
-                    .map(s2 -> s2.toString()).toList();
+            List<String> inputList = input.lines()
+                    .toList();
+            for (String s : inputList) {
+                String[] words = s.split(" ");
+                for (String w : words) {
+                    if (words[words.length - 2].equals("404")) {
+                        rsl.add(s);
+                        break;
+                    }
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,5 +37,4 @@ public class LogFilter {
         LogFilter logFilter = new LogFilter("data/log.txt");
         logFilter.filter().forEach((System.out::println));
     }
-
 }
