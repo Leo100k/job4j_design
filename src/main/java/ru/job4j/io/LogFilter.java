@@ -16,7 +16,7 @@ public class LogFilter {
         try (BufferedReader input = new BufferedReader(new FileReader(file))) {
             for (String line = input.readLine(); line != null; line = input.readLine()) {
                 String[] str = line.split(" ");
-                if (str[str.length - 2].equals("404")) {
+                if (str != null && str[str.length - 2].equals("404")) {
                     rsl.add(line);
                 }
             }
