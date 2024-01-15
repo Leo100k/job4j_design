@@ -21,7 +21,7 @@ public class TableEditor implements AutoCloseable {
         Properties config = new Properties();
         try (InputStream in = TableEditor.class.getClassLoader().getResourceAsStream("app.properties")) {
             config.load(in);
-            String url = config.getProperty("url");  /*jdbc:postgresql://localhost:5432/some_db*/
+            String url = config.getProperty("url");  /*jdbc:postgresql:localhost:5432/some_db*/
             String username = config.getProperty("username"); /*postgres*/
             String password = config.getProperty("password"); /*root*/
 
