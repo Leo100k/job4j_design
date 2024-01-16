@@ -34,17 +34,12 @@ public class TableEditor implements AutoCloseable {
     }
 
     public void createTable(String tableName) {
-        try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "CREATE TABLE IF NOT EXISTS %s (%s, %s);", tableName,
-                    "id SERIAL PRIMARY KEY",
-                    "name TEXT"
-            );
-            statement.execute(sql);
-            System.out.println(getTableScheme(tableName));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String sql = String.format(
+                "CREATE TABLE IF NOT EXISTS %s (%s, %s);", tableName,
+                "id SERIAL PRIMARY KEY",
+                "name TEXT"
+        );
+        exequteSQL(sql, tableName);
     }
 
     public void dropTable(String tableName) {
@@ -58,41 +53,37 @@ public class TableEditor implements AutoCloseable {
     }
 
     public void addColumn(String tableName, String columnName, String typeColumn) {
-        try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "ALTER TABLE " + tableName + " ADD " + columnName + " " + typeColumn);
-            statement.execute(sql);
-            System.out.println(getTableScheme(tableName));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String sql = String.format(
+                "ALTER TABLE " + tableName + " ADD " + columnName + " " + typeColumn);
+        exequteSQL(sql, tableName);
+
     }
 
     public void dropColumn(String tableName, String columnName) {
-        try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "ALTER TABLE " + tableName + " DROP COLUMN " + columnName);
-            statement.execute(sql);
-            System.out.println(getTableScheme(tableName));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String sql = String.format(
+                "ALTER TABLE " + tableName + " DROP COLUMN " + columnName);
+        exequteSQL(sql, tableName);
     }
 
     public void renameColumn(String tableName, String columnName, String newColumnName) {
+        String sql = String.format(
+                "ALTER TABLE " + tableName + " RENAME COLUMN " + columnName + " TO " + newColumnName);
+        exequteSQL(sql, tableName);
+
+    }
+
+    private void exequteSQL(String sql, String tableName) {
         try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "ALTER TABLE " + tableName + " RENAME COLUMN " + columnName + " TO " + newColumnName);
             statement.execute(sql);
             System.out.println(getTableScheme(tableName));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 
 
     public String getTableScheme(String tableName) throws Exception {
-        System.out.println("Из getTableScheme " + tableName);
         var rowSeparator = "-".repeat(30).concat(System.lineSeparator());
         var header = String.format("%-15s|%-15s%n", "NAME", "TYPE");
         var buffer = new StringJoiner(rowSeparator, rowSeparator, rowSeparator);
