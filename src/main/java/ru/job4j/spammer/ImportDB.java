@@ -40,16 +40,19 @@ public class ImportDB {
                     .map(String::trim)
                     .map(line -> line.split(";", 2))
                     .map(strings -> new User(strings[0], strings[1]))
+                    .filter(this::validate)
                     .collect(Collectors.toList());
-
-            for (User us : users) {
-                if (us.name.isEmpty() || us.email.isEmpty()) {
-                    throw new IllegalArgumentException("null or empty filename");
-                }
-            }
 
             return users;
         }
+
+
+    }
+    private boolean validate(User user) {
+        if (user.name.isEmpty() || user.email.isEmpty()) {
+            throw new IllegalArgumentException("this string of array is empty");
+        }
+         return true;
     }
 
     public void save(List<User> users) throws ClassNotFoundException, SQLException {
